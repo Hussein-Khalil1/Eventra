@@ -76,6 +76,19 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
 
   const [removedCurrentImage, setRemovedCurrentImage] = useState(false);
 
+  const toDateInputValue = (date: Date) => {
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    const day = `${date.getDate()}`.padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const fromDateInputValue = (value: string) => {
+    const [year, month, day] = value.split("-").map(Number);
+    if (!year || !month || !day) return null;
+    return new Date(year, month - 1, day);
+  };
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -254,14 +267,10 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     type="date"
                     {...field}
                     onChange={(e) => {
-                      field.onChange(
-                        e.target.value ? new Date(e.target.value) : null
-                      );
+                      field.onChange(fromDateInputValue(e.target.value));
                     }}
                     value={
-                      field.value
-                        ? new Date(field.value).toISOString().split("T")[0]
-                        : ""
+                      field.value ? toDateInputValue(field.value) : ""
                     }
                   />
                 </FormControl>
@@ -324,7 +333,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     src={imagePreview || currentImageUrl!}
                     alt=""
                     fill
-                    className="object-cover object-center blur-[36px] scale-[1.25]"
+                    className="object-cover object-center blur-[16px] scale-[1]"
                     aria-hidden="true"
                   />
                   <div

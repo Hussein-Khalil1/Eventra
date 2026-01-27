@@ -43,7 +43,7 @@ export default function EventPage() {
                 src={imageUrl}
                 alt=""
                 fill
-                className="object-cover object-center blur-[36px] scale-[1.25]"
+                className="object-cover object-center blur-[15px] scale-[0]"
                 aria-hidden="true"
               />
               <div className="absolute inset-0 z-10 bg-black/20" aria-hidden="true" />
