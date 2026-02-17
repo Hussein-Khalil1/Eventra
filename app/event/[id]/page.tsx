@@ -114,17 +114,6 @@ export default function EventPage() {
                   </div>
                 </div>
 
-                {/* Additional Event Information */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                    Event Information
-                  </h3>
-                  <ul className="space-y-2 text-yellow-500">
-                    <li>• Please arrive 30 minutes before the event starts</li>
-                    <li>• Tickets are non-refundable</li>
-                    <li>• Age restriction: 18+</li>
-                  </ul>
-                </div>
               </div>
 
               {/* Right Column - Ticket Purchase Card */}
