@@ -164,7 +164,7 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
             src={imageUrl}
             alt=""
             fill
-            className="object-cover object-center blur-[15px] scale-[1]"
+            className="object-cover object-center blur-[16px] scale-[0.9]"
             aria-hidden="true"
           />
           <div className="absolute inset-0 z-10 bg-black/20" aria-hidden="true" />
@@ -238,8 +238,9 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
           <div className="flex items-center text-gray-600">
             <Ticket className="w-4 h-4 mr-2" />
             <span>
-              {availability.totalTickets - availability.purchasedCount} /{" "}
-              {availability.totalTickets} available
+              {event.hideTicketsRemaining
+                ? "Availability hidden by organizer"
+                : `${availability.totalTickets - availability.purchasedCount} / ${availability.totalTickets} available`}
               {!isPastEvent && availability.activeOffers > 0 && (
                 <span className="text-amber-600 text-sm ml-2">
                   ({availability.activeOffers}{" "}

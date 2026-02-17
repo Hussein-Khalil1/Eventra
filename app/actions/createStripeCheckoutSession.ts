@@ -20,22 +20,48 @@ export type StripeCheckoutMetaData = {
 
 const STRIPE_FEE_RATE = 0.029;
 const STRIPE_FEE_FLAT_CENTS = 30;
+const EVENTRA_PLATFORM_FEE_CENTS = 100;
 
-function calculateEventraFeeCents(basePriceCents: number) {
-  if (basePriceCents < 2000) {
-    return 250;
-  }
-  return 500;
+function calculateEventraFeeCents() {
+  return EVENTRA_PLATFORM_FEE_CENTS;
+}
+
+function calculateStripeProcessingFeeCents(totalChargeCents: number) {
+  return Math.round(totalChargeCents * STRIPE_FEE_RATE) + STRIPE_FEE_FLAT_CENTS;
 }
 
 function calculateTotalChargeCents(
   baseSubtotalCents: number,
   eventraFeeTotalCents: number
 ) {
-  // total = (base + eventra + stripe_flat) / (1 - stripe_rate)
-  const numerator =
-    baseSubtotalCents + eventraFeeTotalCents + STRIPE_FEE_FLAT_CENTS;
-  return Math.ceil(numerator / (1 - STRIPE_FEE_RATE));
+  // Stripe's fixed fee is charged once per checkout payment.
+  // Find the minimum buyer total where seller net is at least base subtotal.
+  let totalChargeCents = Math.ceil(
+    (baseSubtotalCents + eventraFeeTotalCents + STRIPE_FEE_FLAT_CENTS) /
+      (1 - STRIPE_FEE_RATE)
+  );
+
+  while (
+    totalChargeCents -
+      eventraFeeTotalCents -
+      calculateStripeProcessingFeeCents(totalChargeCents) <
+    baseSubtotalCents
+  ) {
+    totalChargeCents += 1;
+  }
+
+  while (
+    totalChargeCents > 0 &&
+    totalChargeCents -
+      1 -
+      eventraFeeTotalCents -
+      calculateStripeProcessingFeeCents(totalChargeCents - 1) >=
+      baseSubtotalCents
+  ) {
+    totalChargeCents -= 1;
+  }
+
+  return totalChargeCents;
 }
 
 export async function createStripeCheckoutSession({
@@ -110,7 +136,7 @@ export async function createStripeCheckoutSession({
   }
 
   const basePriceCents = Math.round(event.price * 100);
-  const eventraFeeCents = calculateEventraFeeCents(basePriceCents);
+  const eventraFeeCents = calculateEventraFeeCents();
   const baseSubtotalCents = basePriceCents * quantity;
   const eventraFeeTotalCents = eventraFeeCents * quantity;
   const totalChargeCents = calculateTotalChargeCents(

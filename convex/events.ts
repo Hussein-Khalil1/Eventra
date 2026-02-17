@@ -45,6 +45,7 @@ export const create = mutation({
     eventDate: v.number(), // Store as timestamp
     price: v.number(),
     totalTickets: v.number(),
+    hideTicketsRemaining: v.boolean(),
     userId: v.string(),
   },
   handler: async (ctx, args) => {
@@ -55,6 +56,7 @@ export const create = mutation({
       eventDate: args.eventDate,
       price: args.price,
       totalTickets: args.totalTickets,
+      hideTicketsRemaining: args.hideTicketsRemaining,
       userId: args.userId,
     });
     return eventId;
@@ -548,6 +550,7 @@ export const updateEvent = mutation({
     eventDate: v.number(),
     price: v.number(),
     totalTickets: v.number(),
+    hideTicketsRemaining: v.boolean(),
   },
   handler: async (ctx, args) => {
     const { eventId, ...updates } = args;

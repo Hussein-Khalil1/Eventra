@@ -37,6 +37,7 @@ const formSchema = z.object({
     ),
   price: z.number().min(0, "Price must be 0 or greater"),
   totalTickets: z.number().min(1, "Must have at least 1 ticket"),
+  hideTicketsRemaining: z.boolean(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -49,6 +50,7 @@ interface InitialEventData {
   eventDate: number;
   price: number;
   totalTickets: number;
+  hideTicketsRemaining?: boolean;
   imageStorageId?: Id<"_storage">;
 }
 
@@ -98,6 +100,7 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
       eventDate: initialData ? new Date(initialData.eventDate) : new Date(),
       price: initialData?.price ?? 0,
       totalTickets: initialData?.totalTickets ?? 1,
+      hideTicketsRemaining: initialData?.hideTicketsRemaining ?? false,
     },
   });
 
@@ -316,6 +319,35 @@ export default function EventForm({ mode, initialData }: EventFormProps) {
                     onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="hideTicketsRemaining"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-start gap-3 rounded-md border border-gray-200 p-3">
+                  <FormControl>
+                    <input
+                      type="checkbox"
+                      checked={field.value}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                      className="mt-1 h-4 w-4 accent-yellow-400"
+                    />
+                  </FormControl>
+                  <div>
+                    <FormLabel className="cursor-pointer">
+                      Hide number of available tickets from buyers
+                    </FormLabel>
+                    <p className="text-sm text-gray-500">
+                      When enabled, buyers can still purchase tickets but
+                      won&apos;t see how many are left.
+                    </p>
+                  </div>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

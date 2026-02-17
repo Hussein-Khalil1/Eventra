@@ -9,6 +9,7 @@ export default defineSchema({
     eventDate: v.number(),
     price: v.number(),
     totalTickets: v.number(),
+    hideTicketsRemaining: v.optional(v.boolean()),
     userId: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
     is_cancelled: v.optional(v.boolean()),
