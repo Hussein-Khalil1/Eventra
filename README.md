@@ -40,7 +40,7 @@ Eventra avoids unnecessary complexity while supporting features required by prod
 
 ---
 
-## Technology
+## Tech Stack
 
 Eventra is built using modern web technologies, focusing on performance, type safety, and developer reliability:
 
@@ -55,12 +55,11 @@ Eventra is built using modern web technologies, focusing on performance, type sa
 
 ## Project Status
 
-Eventra is an actively developed project and continues to evolve with new features, improvements, and refinements to both the user experience and underlying systems.
+Eventra fully deployed application, that currently has 200+ active users, in the past 2 weeks. Currently Eventra has hosted 2 Events and expecting more this month!!
+
 
 ---
 
 ## Vision
 
 The goal of Eventra is to provide a **modern, lightweight alternative** to traditional ticketing platforms by prioritizing usability, transparency, and thoughtful design.
-
-
