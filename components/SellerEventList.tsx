@@ -17,6 +17,7 @@ import Image from "next/image";
 import CancelEventButton from "./CancelEventButton";
 import { Doc } from "@/convex/_generated/dataModel";
 import { Metrics } from "@/convex/events";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function SellerEventList() {
   const { user } = useUser();
@@ -26,8 +27,8 @@ export default function SellerEventList() {
 
   if (!events) return null;
 
-  const upcomingEvents = events.filter((e) => e.eventDate > Date.now());
-  const pastEvents = events.filter((e) => e.eventDate <= Date.now());
+  const upcomingEvents = events.filter((e) => !hasEventSalesClosed(e.eventDate));
+  const pastEvents = events.filter((e) => hasEventSalesClosed(e.eventDate));
 
   return (
     <div className="mx-auto space-y-8">
@@ -69,7 +70,7 @@ function SellerEventCard({
   };
 }) {
   const imageUrl = useStorageUrl(event.imageStorageId);
-  const isPastEvent = event.eventDate < Date.now();
+  const isPastEvent = hasEventSalesClosed(event.eventDate);
 
   return (
     <div

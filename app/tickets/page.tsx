@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import TicketCard from "@/components/TicketCard";
 import { Ticket } from "lucide-react";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function MyTicketsPage() {
   const { user } = useUser();
@@ -18,10 +19,10 @@ export default function MyTicketsPage() {
   const otherTickets = tickets.filter((t) => t.status !== "valid");
 
   const upcomingTickets = validTickets.filter(
-    (t) => t.event && t.event.eventDate > Date.now()
+    (t) => t.event && !hasEventSalesClosed(t.event.eventDate)
   );
   const pastTickets = validTickets.filter(
-    (t) => t.event && t.event.eventDate <= Date.now()
+    (t) => t.event && hasEventSalesClosed(t.event.eventDate)
   );
 
   const groupTicketsByEvent = (

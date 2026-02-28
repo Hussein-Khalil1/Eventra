@@ -11,6 +11,12 @@ export type Metrics = {
   revenue: number;
 };
 
+const getEventSalesDeadline = (eventDate: number): number => {
+  const deadline = new Date(eventDate);
+  deadline.setHours(23, 59, 59, 999);
+  return deadline.getTime();
+};
+
 // Initialize rate limiter
 const rateLimiter = new RateLimiter(components.rateLimiter, {
   queueJoin: {
@@ -141,6 +147,10 @@ export const joinWaitingList = mutation({
     // Verify the event exists
     const event = await ctx.db.get(eventId);
     if (!event) throw new Error("Event not found");
+    const now = Date.now();
+    if (now > getEventSalesDeadline(event.eventDate)) {
+      throw new Error("Ticket sales have ended for this event");
+    }
 
     // Check if there are any available tickets right now
     // Count total purchased tickets
@@ -158,7 +168,6 @@ export const joinWaitingList = mutation({
       );
 
     // Count current valid offers
-    const now = Date.now();
     const activeOffers = await ctx.db
       .query("waitingList")
       .withIndex("by_event_status", (q) =>
@@ -308,6 +317,11 @@ export const purchaseTicket = mutation({
     }
 
     try {
+      const now = Date.now();
+      if (now > getEventSalesDeadline(event.eventDate)) {
+        throw new Error("Ticket sales have ended for this event");
+      }
+
       const purchasedCount = await ctx.db
         .query("tickets")
         .withIndex("by_event", (q) => q.eq("eventId", eventId))
@@ -321,7 +335,6 @@ export const purchaseTicket = mutation({
             ).length
         );
 
-      const now = Date.now();
       const activeOffers = await ctx.db
         .query("waitingList")
         .withIndex("by_event_status", (q) =>

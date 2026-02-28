@@ -8,6 +8,7 @@ import Spinner from "./Spinner";
 import { Clock, OctagonXIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ConvexError } from "convex/values";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function JoinQueue({
   eventId,
@@ -67,7 +68,7 @@ export default function JoinQueue({
     return null;
   }
 
-  const isPastEvent = event.eventDate < Date.now();
+  const isPastEvent = hasEventSalesClosed(event.eventDate);
 
   return (
     <div>

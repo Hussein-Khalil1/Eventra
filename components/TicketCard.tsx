@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Spinner from "./Spinner";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
   const ticket = useQuery(api.tickets.getTicketWithDetails, { ticketId });
@@ -26,7 +27,7 @@ export default function TicketCard({ ticketId }: { ticketId: Id<"tickets"> }) {
     );
   }
 
-  const isPastEvent = ticket.event.eventDate < Date.now();
+  const isPastEvent = hasEventSalesClosed(ticket.event.eventDate);
 
   const statusColors = {
     valid: isPastEvent

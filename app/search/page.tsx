@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import EventCard from "@/components/EventCard";
 import { Search } from "lucide-react";
 import Spinner from "@/components/Spinner";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -21,11 +22,11 @@ export default function SearchPage() {
   }
 
   const upcomingEvents = searchResults
-    .filter((event) => event.eventDate > Date.now())
+    .filter((event) => !hasEventSalesClosed(event.eventDate))
     .sort((a, b) => a.eventDate - b.eventDate);
 
   const pastEvents = searchResults
-    .filter((event) => event.eventDate <= Date.now())
+    .filter((event) => hasEventSalesClosed(event.eventDate))
     .sort((a, b) => b.eventDate - a.eventDate);
 
   return (

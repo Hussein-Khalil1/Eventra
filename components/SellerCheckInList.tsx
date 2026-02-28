@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { CalendarDays, Scan, Ticket } from "lucide-react";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function SellerCheckInList() {
   const { user } = useUser();
@@ -14,8 +15,12 @@ export default function SellerCheckInList() {
 
   if (!events) return null;
 
-  const upcomingEvents = events.filter((event) => event.eventDate > Date.now());
-  const pastEvents = events.filter((event) => event.eventDate <= Date.now());
+  const upcomingEvents = events.filter(
+    (event) => !hasEventSalesClosed(event.eventDate)
+  );
+  const pastEvents = events.filter((event) =>
+    hasEventSalesClosed(event.eventDate)
+  );
 
   const renderEventCard = (event: (typeof events)[number]) => (
     <div

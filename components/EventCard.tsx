@@ -19,6 +19,7 @@ import PurchaseTicket from "./PurchaseTicket";
 import { useRouter } from "next/navigation";
 import { useStorageUrl } from "@/lib/utils";
 import Image from "next/image";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   const { user } = useUser();
@@ -40,7 +41,7 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
     return null;
   }
 
-  const isPastEvent = event.eventDate < Date.now();
+  const isPastEvent = hasEventSalesClosed(event.eventDate);
 
   const isEventOwner = user?.id === event?.userId;
 

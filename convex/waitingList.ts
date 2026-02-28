@@ -4,6 +4,12 @@ import { Id } from "./_generated/dataModel";
 import { DURATIONS, WAITING_LIST_STATUS, TICKET_STATUS } from "./constants";
 import { internal } from "./_generated/api";
 
+const getEventSalesDeadline = (eventDate: number): number => {
+  const deadline = new Date(eventDate);
+  deadline.setHours(23, 59, 59, 999);
+  return deadline.getTime();
+};
+
 /**
  * Helper function to group waiting list entries by event ID.
  * Used for batch processing expired offers by event.
@@ -79,6 +85,7 @@ export const processQueue = internalMutation({
   handler: async (ctx, { eventId }) => {
     const event = await ctx.db.get(eventId);
     if (!event) throw new Error("Event not found");
+    if (Date.now() > getEventSalesDeadline(event.eventDate)) return;
 
     // Calculate available spots
     const { availableSpots } = await ctx.db

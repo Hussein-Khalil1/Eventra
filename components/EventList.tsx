@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import EventCard from "./EventCard";
 import Spinner from "./Spinner";
 import { CalendarDays, Ticket } from "lucide-react";
+import { hasEventSalesClosed } from "@/lib/eventDate";
 
 export default function EventList() {
   const events = useQuery(api.events.get);
@@ -18,11 +19,11 @@ export default function EventList() {
   }
 
   const upcomingEvents = events
-    .filter((event) => event.eventDate > Date.now())
+    .filter((event) => !hasEventSalesClosed(event.eventDate))
     .sort((a, b) => a.eventDate - b.eventDate);
 
   const pastEvents = events
-    .filter((event) => event.eventDate <= Date.now())
+    .filter((event) => hasEventSalesClosed(event.eventDate))
     .sort((a, b) => b.eventDate - a.eventDate);
 
   return (
